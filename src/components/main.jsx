@@ -29,13 +29,15 @@ const Main = () => {
     for (let i = 0; i < bugs; i++) {
       temp.push({
         index: i,
-        opacity: 1,
-        topPos: Math.floor(Math.random() * 10 + 1),
-        left: Math.floor(Math.random() * window.innerWidth + 1),
+        opacity: Math.random(),
+        top: Math.floor(Math.random() * 500 + 1),
+        left: Math.floor(Math.random() * (window.outerWidth - 100 - 50 + 1) + 50),
+        height: Math.floor(Math.random() * (40 - 20 + 1) + 20),
+        width: Math.floor(Math.random() * (18 - 15 + 1) + 15),
       });
     }
-    setDropArr(temp);
     console.log(temp);
+    setDropArr(temp);
   };
   // Calculating the number of minutes until 17:00
   const calcMinutes = () => {
@@ -44,29 +46,38 @@ const Main = () => {
     deadline.setHours(17, 0, 0);
     const total = Date.parse(deadline) - now;
     let minutesLeft = Math.floor((total / 1000 / 60) % 60);
-    let hoursLeft = Math.floor((total / (1000 * 60 * 60)) % 24);
 
-    setTimeLeft(
-      `${hoursLeft > 0 ? hoursLeft : 0} hours and ${minutesLeft > 0 ? minutesLeft : 0} minutes`
-    );
+    setTimeLeft(`${minutesLeft} minutes`);
   };
+
+  const calcChance = () => {};
   useEffect(() => {
     getBugsAmount();
     calcMinutes();
   }, []);
   return (
     <div className="main">
-      <div className="drops">
-        {dropArr.map(({ index, topPos, left, opacity }) => (
-          <div key={index} className="drop" style={{ top: topPos }}></div>
-        ))}
+      <div className="titles">
+        {loading ? (
+          <div className="loading-title">Calculating...</div>
+        ) : (
+          <>
+            <div className="main-title">{`Rainy with ${percentage}% for Pizza`}</div>
+            <div className="sub-title">
+              <div className="bugs-amount"> {bugs}</div>
+              <div className="bugs-text">
+                {bugs > 1
+                  ? ` bugs found and ${timeLeft} are left until 17:00`
+                  : ` bug found and ${timeLeft} are left until 17:00`}
+              </div>
+            </div>
+          </>
+        )}
       </div>
-      <div className="main-title">{`Rainy with ${percentage}% for Pizza`}</div>
-      <div className="sub-title">
-        <span>{loading ? <Loader /> : bugs}</span>
-        {bugs > 1
-          ? ` bugs found and ${timeLeft} are left untill 17:00`
-          : ` bug found and ${timeLeft} are left untill 17:00`}
+      <div className="drops">
+        {dropArr.map(({ index, top, left, opacity, height, width }) => (
+          <div key={index} className="drop" style={{ top, left, opacity, height, width }}></div>
+        ))}
       </div>
       <div className="pizza-img-wrap">
         <img className="pizza-img" src={pizza} alt="pizza" />
