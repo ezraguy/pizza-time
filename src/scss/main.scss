@@ -26,6 +26,10 @@
     margin-top: 20px;
     font-size: 16px;
     text-align: center;
+    display: flex;
+    span {
+      margin-right: 5px;
+    }
   }
   .pizza-img-wrap {
     position: absolute;
