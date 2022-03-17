@@ -26,6 +26,7 @@ const Main = () => {
   };
   const generateDrops = (bugs) => {
     let temp = [...dropArr];
+
     for (let i = 0; i < bugs; i++) {
       temp.push({
         index: i,
@@ -47,11 +48,17 @@ const Main = () => {
     let minutesLeft = Math.floor((total / 1000 / 60) % 60);
     let hoursLeft = Math.floor((total / (1000 * 60 * 60)) % 24);
     let totalMinutes = hoursLeft * 60 + minutesLeft;
+    if (totalMinutes < 0) {
+      totalMinutes = 0;
+    }
     setTimeLeft(totalMinutes);
   };
 
   const calcChance = () => {
     let percent = ((bugs * 7) / timeLeft) * 100;
+    if (percent < 0) {
+      percent = 0;
+    }
     let indicatorTemp = percent * 1.6 + 273;
     setIndicatorDeg(indicatorTemp.toFixed(0) > 427 ? 427 : indicatorTemp.toFixed(0));
     setPercentage(percent > 100 ? 100 : percent.toFixed(0));
