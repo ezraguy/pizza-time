@@ -95,7 +95,7 @@ const Main = () => {
         <img className="pizza-img" src={pizza} alt="pizza" />
         <div
           className="percent-indicator"
-          style={{ transform: `rotate(${indicatorDeg}deg)` }}
+          style={{ transform: `rotate(${indicatorDeg}deg)`, transition: ' transform 0.5s ease' }}
         ></div>
       </div>
     </div>
