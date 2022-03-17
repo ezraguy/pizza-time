@@ -7,12 +7,12 @@ const Main = () => {
   const [bugs, setBugs] = useState(0);
   const [percentage, setPercentage] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [timeLeft, setTimeLeft] = useState('');
+  const [timeLeft, setTimeLeft] = useState(0);
   const [dropArr, setDropArr] = useState([]);
-
+  const [indicatorDeg, setIndicatorDeg] = useState(null);
   // Getting the amount of bugs from the API
   const getBugsAmount = () => {
-    const url = 'http://www.randomnumberapi.com/api/v1.0/random?min=1&max=99&count=1';
+    const url = 'https://random-number-node-ge.herokuapp.com/';
     axios
       .get(url)
       .then((response) => {
@@ -36,7 +36,6 @@ const Main = () => {
         width: Math.floor(Math.random() * (18 - 15 + 1) + 15),
       });
     }
-    console.log(temp);
     setDropArr(temp);
   };
   // Calculating the number of minutes until 17:00
@@ -46,15 +45,28 @@ const Main = () => {
     deadline.setHours(17, 0, 0);
     const total = Date.parse(deadline) - now;
     let minutesLeft = Math.floor((total / 1000 / 60) % 60);
-
-    setTimeLeft(`${minutesLeft} minutes`);
+    let hoursLeft = Math.floor((total / (1000 * 60 * 60)) % 24);
+    let totalMinutes = hoursLeft * 60 + minutesLeft;
+    setTimeLeft(totalMinutes);
   };
 
-  const calcChance = () => {};
+  const calcChance = () => {
+    let percent = ((bugs * 7) / timeLeft) * 100;
+    let indicatorTemp = percent * 1.6 + 273;
+    setIndicatorDeg(indicatorTemp.toFixed(0) > 427 ? 427 : indicatorTemp.toFixed(0));
+    setPercentage(percent > 100 ? 100 : percent.toFixed(0));
+  };
+
   useEffect(() => {
     getBugsAmount();
     calcMinutes();
   }, []);
+
+  useEffect(() => {
+    if (bugs !== 0 && timeLeft !== 0) {
+      calcChance();
+    }
+  }, [bugs, timeLeft]);
   return (
     <div className="main">
       <div className="titles">
@@ -67,8 +79,8 @@ const Main = () => {
               <div className="bugs-amount"> {bugs}</div>
               <div className="bugs-text">
                 {bugs > 1
-                  ? ` bugs found and ${timeLeft} are left until 17:00`
-                  : ` bug found and ${timeLeft} are left until 17:00`}
+                  ? ` bugs found and ${timeLeft} minutes are left until 17:00`
+                  : ` bug found and ${timeLeft} minutes are left until 17:00`}
               </div>
             </div>
           </>
@@ -81,6 +93,10 @@ const Main = () => {
       </div>
       <div className="pizza-img-wrap">
         <img className="pizza-img" src={pizza} alt="pizza" />
+        <div
+          className="percent-indicator"
+          style={{ transform: `rotate(${indicatorDeg}deg)` }}
+        ></div>
       </div>
     </div>
   );
